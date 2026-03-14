@@ -1,6 +1,7 @@
+Router#show run
 Building configuration...
 
-Current configuration : 1748 bytes
+Current configuration : 1537 bytes
 !
 version 15.1
 no service timestamps log datetime msec
@@ -47,41 +48,10 @@ spanning-tree mode pvst
 !
 !
 interface GigabitEthernet0/0
- no ip address
+ ip address 10.0.0.1 255.255.255.252
+ ip nat inside
  duplex auto
  speed auto
-!
-interface GigabitEthernet0/0.10
- encapsulation dot1Q 10
- ip address 192.168.1.1 255.255.255.0
-!
-interface GigabitEthernet0/0.20
- encapsulation dot1Q 20
- ip address 192.168.2.1 255.255.255.0
-!
-interface GigabitEthernet0/0.30
- encapsulation dot1Q 30
- ip address 192.168.3.1 255.255.255.0
-!
-interface GigabitEthernet0/0.40
- encapsulation dot1Q 40
- ip address 192.168.4.1 255.255.255.0
-!
-interface GigabitEthernet0/0.50
- encapsulation dot1Q 50
- ip address 192.168.5.1 255.255.255.0
-!
-interface GigabitEthernet0/0.60
- encapsulation dot1Q 60
- ip address 192.168.6.1 255.255.255.0
-!
-interface GigabitEthernet0/0.70
- encapsulation dot1Q 70
- ip address 192.168.7.1 255.255.255.0
-!
-interface GigabitEthernet0/0.80
- encapsulation dot1Q 80
- ip address 192.168.8.1 255.255.255.0
 !
 interface GigabitEthernet0/1
  no ip address
@@ -96,8 +66,9 @@ interface GigabitEthernet0/2
  shutdown
 !
 interface Serial0/1/0
- ip address 10.10.10.5 255.255.255.252
- clock rate 4000000
+ ip address 200.0.0.1 255.255.255.252
+ ip nat outside
+ clock rate 2000000
 !
 interface Serial0/1/1
  ip address 10.10.10.1 255.255.255.252
@@ -107,11 +78,31 @@ interface Vlan1
  no ip address
  shutdown
 !
+router eigrp 100
+ network 10.10.10.0 0.0.0.3
+ network 10.0.0.0 0.0.0.3
+!
+router ospf 1
+ log-adjacency-changes
+ network 10.0.0.0 0.0.0.3 area 0
+ network 10.10.10.0 0.0.0.3 area 0
+ distance 80
+ default-information originate
+!
+router bgp 65001
+ bgp log-neighbor-changes
+ no synchronization
+ neighbor 200.0.0.2 remote-as 65002
+ network 200.0.0.0 mask 255.255.255.252
+!
+ip nat inside source list 1 interface Serial0/1/0 overload
 ip classless
+ip route 0.0.0.0 0.0.0.0 200.0.0.2 
 !
 ip flow-export version 9
 !
 !
+access-list 1 permit 192.168.0.0 0.0.255.255
 !
 !
 !
