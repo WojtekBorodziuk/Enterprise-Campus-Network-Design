@@ -1,6 +1,6 @@
 # Enterprise-Campus-Network-Design
 Network Design of a Campus Area Network made in Packet Tracer.
-![Network Topology](Networks_topology.png)
+![Network Topology](NetworkTopology.png)
 
 ## About the Project
 A comprehensive simulation of an Enterprise Network built in Cisco Packet Tracer. The project showcases advanced routing, switching, and network services techniques, simulating a real-world environment of a large company with multiple buildings, a remote branch, and a connection to the global Internet using the BGP protocol.
